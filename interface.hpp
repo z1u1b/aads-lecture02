@@ -12,36 +12,52 @@ BiList<T> *add(BiList<T> *h, const T &v) {
   e->prev = h->prev;
   e->next = h;
 
-  e->next->prev = e;
-  e->prev->next = e;
+  if (e->next) {
+    e->next->prev = e;
+  }
+
+  if (e->prev) {
+    e->prev->next = e;
+  }
 
   return e;
 }
 
 template <class T> // добавить после
 BiList<T> *insert(BiList<T> *h, const T &v) {
-  BiList<T> *tmp = add(h->next, v);
-  if (h->next) {
-    h->next->prev = tmp;
-  }
 
-  h->next = tmp;
+  BiList<T> *tmp = nullptr;
+  if (h->next) {
+    tmp = add(h->next, v);
+
+  } else {
+    tmp = new BiList<T>;
+    tmp->val = v;
+    tmp->prev = h;
+    tmp->next = nullptr;
+    h->next = tmp;
+  }
   return tmp;
 }
 
 template <class T> BiList<T> *fake(BiList<T> *h) {
   // BiList< T >* r = static_cast< BiList< T >* >(::operator new(sizeof(BiList<
   // T >*)));
-  BiList<T> *a = new BiList<T>;
+  BiList<T> *f = new BiList<T>;
 
-  a->prev = nullptr;
-  a->next = h;
+  f->prev = nullptr;
+  f->next = h;
 
   if (h) {
-    h->prev = a;
+    h->prev = f;
   }
 
-  return a;
+  return f;
+}
+
+template <class T> BiList<T> *make(const T &data) {
+  BiList<T> *h = new BiList<T>{data, nullptr, nullptr};
+  return fake(h);
 }
 
 template <class T> BiList<T> *rmfake(BiList<T> *h) noexcept {
